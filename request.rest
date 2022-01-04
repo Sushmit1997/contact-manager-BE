@@ -1,0 +1,14 @@
+GET http://localhost:5000/contacts
+
+###
+POST http://localhost:5000/contacts
+Content-Type: application/json
+
+{
+  "name":"Ashmit Rajaure",
+  "number" : 9813058480
+}
+
+
+###
+DELETE http://localhost:5000/contacts/61d45fa5fdd01dd211cbbd9a
