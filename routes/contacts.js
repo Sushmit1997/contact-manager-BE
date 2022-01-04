@@ -2,6 +2,8 @@ const express = require('express')
 
 const router = express.Router()
 const Contact = require('../models/contacts')
+const multer = require('multer');
+const upload = multer({ dest: 'uploads/' })
 
 //Getting all contacts
 router.get('/', async (req, res) => {
@@ -14,7 +16,8 @@ router.get('/', async (req, res) => {
 })
 
 //Adding a contact
-router.post('/', async (req, res) => {
+router.post('/', upload.single('image'), async (req, res) => {
+  console.log(req.body.image)
   const contact = new Contact({
     name: req.body.name,
     number: req.body.number

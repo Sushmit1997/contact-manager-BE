@@ -17,13 +17,12 @@ db.once('open', () => console.log('Connected to database'))
 
 app.use(express.json())
 app.use(cors({
-  origin: 'http://localhost'
+  origin: 'http://localhost:3000'
 }))
 
 
 const contactRouter = require('./routes/contacts')
 app.use('/contacts', contactRouter)
-
 app.get('/posts', (req, res) => {
   console.log(req.body)
   res.json(({ status: 'ok' }))
