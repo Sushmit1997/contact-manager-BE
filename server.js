@@ -4,6 +4,11 @@ const cors = require('cors')
 require('dotenv').config()
 
 
+const contactRouter = require('./routes/contacts')
+const users = require("./routes/users");
+const auth = require("./routes/auth");
+
+
 
 const mongoose = require('mongoose')
 
@@ -21,12 +26,12 @@ app.use(cors({
 }))
 
 
-const contactRouter = require('./routes/contacts')
+
 app.use('/contacts', contactRouter)
-app.get('/posts', (req, res) => {
-  console.log(req.body)
-  res.json(({ status: 'ok' }))
-})
+app.use("/users", users);
+app.use("/signin", auth);
+
+
 
 app.listen(5000, () => {
   console.log('Server up at 5000')

@@ -4,9 +4,10 @@ const router = express.Router()
 const Contact = require('../models/contacts')
 const multer = require('multer');
 const upload = multer({ dest: 'uploads/' })
+const auth = require("../middleware/auth");
 
 //Getting all contacts
-router.get('/', async (req, res) => {
+router.get('/', auth, async (req, res) => {
   try {
     const contacts = await Contact.find()
     res.status(200).json(contacts)
@@ -16,7 +17,7 @@ router.get('/', async (req, res) => {
 })
 
 //Adding a contact
-router.post('/', upload.single('image'), async (req, res) => {
+router.post('/', auth, upload.single('image'), async (req, res) => {
   console.log(req.body.image)
   const contact = new Contact({
     name: req.body.name,
@@ -32,7 +33,7 @@ router.post('/', upload.single('image'), async (req, res) => {
 })
 
 //Updating a contact
-router.patch('/:id', getContact, async (req, res) => {
+router.patch('/:id', auth, getContact, async (req, res) => {
   if (req.body.name !== null) {
     res.contact.name = req.body.name
   }
@@ -54,7 +55,7 @@ router.patch('/:id', getContact, async (req, res) => {
 })
 
 //Deleting a contact
-router.delete('/:id', getContact, async (req, res) => {
+router.delete('/:id', auth, getContact, async (req, res) => {
   try {
     await res.contact.remove()
     await res.json({ message: 'Deleted successfully.' })
