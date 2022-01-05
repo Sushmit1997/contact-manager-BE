@@ -3,8 +3,41 @@ const express = require('express')
 const router = express.Router()
 const Contact = require('../models/contacts')
 const multer = require('multer');
-const upload = multer({ dest: 'uploads/' })
+
 const auth = require("../middleware/auth");
+
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, './uploads')
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + file.originalname);
+  }
+})
+
+const fileFilter = (req, file, cb) => {
+  //reject a file
+
+  if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
+    cb(null, true)
+  }
+  else {
+    cb(null, false)
+  }
+
+
+};
+
+const upload = multer({
+  storage: storage,
+  limits: {
+    fileSize: 1024 * 1024 * 5
+  },
+  fileFilter: fileFilter
+})
+
+
 
 //Getting all contacts
 router.get('/', auth, async (req, res) => {
@@ -18,10 +51,12 @@ router.get('/', auth, async (req, res) => {
 
 //Adding a contact
 router.post('/', auth, upload.single('image'), async (req, res) => {
-  console.log(req.body.image)
   const contact = new Contact({
     name: req.body.name,
-    number: req.body.number
+    number: req.body.number,
+    email: req.body.email,
+    address: req.body.address,
+    image: req.file ? req.file.path : ''
   })
   try {
     const newContact = await contact.save()
@@ -33,7 +68,7 @@ router.post('/', auth, upload.single('image'), async (req, res) => {
 })
 
 //Updating a contact
-router.patch('/:id', auth, getContact, async (req, res) => {
+router.patch('/:id', auth, upload.single('image'), getContact, async (req, res) => {
   if (req.body.name !== null) {
     res.contact.name = req.body.name
   }
@@ -41,12 +76,20 @@ router.patch('/:id', auth, getContact, async (req, res) => {
     res.contact.number = req.body.number
   }
   if (req.body.image !== null) {
-    res.contact.image = req.body.image
+    res.contact.image = req.file ? req.file.path : req.body.image
   }
 
+  if (req.body.email !== null) {
+    res.contact.email = req.body.email
+  }
+  if (req.body.address !== null) {
+    res.contact.address = req.body.address
+  }
+
+
   try {
-    const updatedSubscriber = await res.subscriber.save()
-    res.json(updatedSubscriber)
+    const updatedContact = await res.contact.save()
+    res.json(updatedContact)
   } catch (err) {
     res.status(400)
 

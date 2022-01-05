@@ -11,6 +11,12 @@ const contactSchema = new mongoose.Schema({
   },
   image: {
     type: String,
+  },
+  address: {
+    type: String
+  },
+  email: {
+    type: String
   }
 })
 

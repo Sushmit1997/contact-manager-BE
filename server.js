@@ -11,6 +11,7 @@ const auth = require("./routes/auth");
 
 
 const mongoose = require('mongoose')
+const { use } = require('./routes/contacts')
 
 
 mongoose.connect(process.env.DATABASE_URL)
@@ -30,6 +31,7 @@ app.use(cors({
 app.use('/contacts', contactRouter)
 app.use("/users", users);
 app.use("/signin", auth);
+app.use('/uploads', express.static('uploads'));
 
 
 
