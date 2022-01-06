@@ -11,12 +11,20 @@ const contactSchema = new mongoose.Schema({
   },
   image: {
     type: String,
+    required: true
   },
   address: {
     type: String
   },
   email: {
     type: String
+  },
+  isFavourite: {
+    type: Boolean
+  },
+  createdBy: {
+    type: String,
+    required: true
   }
 })
 

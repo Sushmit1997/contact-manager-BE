@@ -33,4 +33,9 @@ Content-Type: application/json
 }
 
 ###
-GET http://localhost:5000/users/me
+GET http://localhost:5000/users/me\
+
+
+###
+
+GET http://localhost:5000/contacts/favourite/61d57414f36527721af2a206

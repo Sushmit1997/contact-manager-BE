@@ -41,9 +41,13 @@ const upload = multer({
 
 //Getting all contacts
 router.get('/', auth, async (req, res) => {
+
   try {
-    const contacts = await Contact.find()
-    res.status(200).json(contacts)
+    const contacts = await Contact.find({ createdBy: req.user._id })
+    let favouriteContacts = contacts.filter((contact) => contact.isFavourite).sort(compare)
+    let notFavouriteContacts = contacts.filter((contact) => !contact.isFavourite)
+    let finalContacts = [...favouriteContacts, ...notFavouriteContacts]
+    res.status(200).json(finalContacts)
   } catch (err) {
     res.status(500).json({ message: err.message })
   }
@@ -56,7 +60,8 @@ router.post('/', auth, upload.single('image'), async (req, res) => {
     number: req.body.number,
     email: req.body.email,
     address: req.body.address,
-    image: req.file ? req.file.path : ''
+    image: req.file ? req.file.path : '',
+    createdBy: req.user._id
   })
   try {
     const newContact = await contact.save()
@@ -107,6 +112,18 @@ router.delete('/:id', auth, getContact, async (req, res) => {
   }
 })
 
+//Favourite contact
+
+router.get('/favourite/:id', getContact, async (req, res) => {
+  try {
+    res.contact.isFavourite = !res.contact.isFavourite
+    res.contact.save()
+    res.status(200).json({ message: res.contact.isFavourite ? 'Removed from favourites' : 'Added to Favourites' })
+  } catch (err) {
+    res.status(500).json({ message: 'Failed to add favourite.' })
+  }
+})
+
 async function getContact(req, res, next) {
   let contact
   try {
@@ -119,6 +136,16 @@ async function getContact(req, res, next) {
   }
   res.contact = contact
   next()
+}
+
+function compare(a, b) {
+  if (a.name < b.name) {
+    return -1;
+  }
+  if (a.name > b.name) {
+    return 1;
+  }
+  return 0;
 }
 
 module.exports = router
