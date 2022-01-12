@@ -13,6 +13,8 @@ const auth = require("./routes/auth");
 const mongoose = require('mongoose')
 const { use } = require('./routes/contacts')
 
+const port = process.env.port || 5000
+
 
 mongoose.connect(process.env.DATABASE_URL)
 
@@ -35,6 +37,6 @@ app.use('/uploads', express.static('uploads'));
 
 
 
-app.listen(5000, () => {
+app.listen(port, () => {
   console.log('Server up at 5000')
 })
