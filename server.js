@@ -24,7 +24,7 @@ db.once('open', () => console.log('Connected to database'))
 
 app.use(express.json())
 app.use(cors({
-  origin: 'http://localhost:3000'
+  origin: 'https://contact-manager-lf-fe.herokuapp.com'
 }))
 
 
@@ -37,5 +37,5 @@ app.use('/uploads', express.static('uploads'));
 
 
 app.listen(port, () => {
-  console.log('Server up at 5000')
+  console.log(`Server up at ${port}`)
 })
