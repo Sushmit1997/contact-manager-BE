@@ -24,7 +24,7 @@ db.once('open', () => console.log('Connected to database'))
 
 app.use(express.json())
 app.use(cors({
-  origin: 'https://contact-manager-lf-fe.herokuapp.com'
+  origin: 'http://localhost:3000'
 }))
 
 
